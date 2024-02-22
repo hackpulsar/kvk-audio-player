@@ -1,0 +1,6 @@
+[submodule "src/libtinyfiledialogs"]
+	path = src/libtinyfiledialogs
+	url = https://github.com/native-toolkit/libtinyfiledialogs
+[submodule "extern/openal-soft"]
+	path = extern/openal-soft
+	url = https://github.com/kcat/openal-soft
