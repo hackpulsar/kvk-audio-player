@@ -22,10 +22,7 @@ private slots:
     void on_playButton_clicked();
  
     void on_progressSlider_sliderMoved(int position);
-
     void on_progressSlider_sliderReleased();
-
-    void on_progressSlider_sliderPressed();
 
     void on_actionAbout_triggered();
 
@@ -37,6 +34,8 @@ private:
 
     MusicBuffer* m_Music = nullptr;
     std::thread* m_MusicThread = nullptr;
+
+    int m_nCurrentPlayPosition = 0;
 
 };
 

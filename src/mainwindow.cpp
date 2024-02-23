@@ -60,9 +60,12 @@ void MainWindow::PlayingLoop()
         std::string sElapsed = fmt::format("{:02.0f}:{:02.0f}", std::floor(elapsed.count() / 60), std::fmod(elapsed.count(), 60));
         ui->elapsedLabel->setText(sElapsed.c_str());
 
-        ui->progressSlider->setValue(m_Music->GetElapsedPercent());
+        if (ui->progressSlider->isSliderDown() == false)
+            ui->progressSlider->setValue(m_Music->GetElapsedPercent());
+
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    ui->playButton->setIcon(QIcon("../res/play_icon.png"));
 }
 
 void MainWindow::on_playButton_clicked()
@@ -89,32 +92,15 @@ void MainWindow::on_playButton_clicked()
 void MainWindow::on_progressSlider_sliderMoved(int position)
 {
     qDebug() << "Slider moved to " << position;
-    if (m_Music != nullptr)
-        m_Music->SetCurrentPlayPosition(position);
-    else qDebug() << "No music loaded";
+    m_nCurrentPlayPosition = position;
 }
-
 
 void MainWindow::on_progressSlider_sliderReleased()
 {
     qDebug() << "Slider released";
-    if (m_Music != nullptr)
-    {
-        m_Music->Play();
-        m_MusicThread = new std::thread(&MainWindow::PlayingLoop, this);
-    }
-    else qDebug() << "No music loaded";
-}
 
-
-void MainWindow::on_progressSlider_sliderPressed()
-{
-    qDebug() << "Slider pressed";
     if (m_Music != nullptr)
-    {
-        m_Music->Pause();
-        m_MusicThread->join();
-    }
+        m_Music->SetCurrentPlayPosition(m_nCurrentPlayPosition);
     else qDebug() << "No music loaded";
 }
 
