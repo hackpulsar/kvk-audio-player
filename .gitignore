@@ -4,3 +4,4 @@ build/
 extern/openal-soft/lib/
 
 .DS_Store
+CMakeLists.txt.user
