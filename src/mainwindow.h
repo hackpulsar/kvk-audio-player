@@ -27,6 +27,8 @@ private slots:
 
     void on_progressSlider_sliderPressed();
 
+    void on_actionAbout_triggered();
+
 private:
     void PlayingLoop();
 

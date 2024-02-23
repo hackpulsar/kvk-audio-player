@@ -123,6 +123,12 @@ bool MusicBuffer::IsPlaying() const
 
 int MusicBuffer::GetElapsedPercent() const { return m_nElapsedPercent; }
 
+double MusicBuffer::GetDuration() const { return (double)m_SFInfo.frames / (double)m_SFInfo.samplerate; }
+double MusicBuffer::GetCurrentElapsedTime() const 
+{ 
+    return (double)m_nSlens * (double)BUFFER_SAMPLES / (double)m_SFInfo.samplerate;
+}
+
 MusicBuffer::MusicBuffer(const char* sFilename)
 {
     alGenSources(1, &m_Source);

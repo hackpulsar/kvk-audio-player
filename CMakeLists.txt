@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if (WIN32)
     project(kvk_media_player LANGUAGES CXX)
 elseif(UNIX)
@@ -14,6 +17,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_PREFIX_PATH $ENV{QTDIR})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 
 add_compile_options(-Wall -Wextra -Wno-deprecated)
 
@@ -35,7 +39,7 @@ file(GLOB_RECURSE SOURCES
     "${SOURCE_DIR}/*/*.c"
 )
 
-message(STATUS "SOURCES: ${SOURCES}")
+#message(STATUS "SOURCES: ${SOURCES}")
 
 file(GLOB EXTERN_INCLUDE_DIRS
      "${CMAKE_SOURCE_DIR}/extern/*/include"
@@ -45,6 +49,7 @@ file(GLOB EXTERN_LIB_DIRS
      "${CMAKE_SOURCE_DIR}/extern/*/lib"
 )
 
+message(STATUS "EXTERN_LIB_DIRS: ${EXTERN_LIB_DIRS}")
 
 include_directories(${FORMS_DIR})
 include_directories(${EXTERN_INCLUDE_DIRS})
@@ -68,4 +73,4 @@ target_include_directories(kvk_media_player PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
 target_link_directories(kvk_media_player PRIVATE ${EXTERN_LIB_DIRS})
-target_link_libraries(kvk_media_player Qt6::Widgets openal SndFile::sndfile)
+target_link_libraries(kvk_media_player Qt6::Widgets openal SndFile::sndfile fmt)

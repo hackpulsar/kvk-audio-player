@@ -4,14 +4,24 @@
 #include "SoundDevice.h"
 #include "libtinyfiledialogs/tinyfiledialogs.h"
 
+#include <chrono>
+#include <string>
+
+#include <fmt/format.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("KVK Audio Player");
 
     SoundDevice::init();
-    ui->statusLabel->setText("Not loaded");
+
+    ui->playButton->setFixedSize(100, 100);
+    ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+    ui->playButton->setIconSize(QSize(100, 100));
+    ui->playButton->setStyleSheet("border: none;");
 }
 
 MainWindow::~MainWindow()
@@ -29,8 +39,15 @@ void MainWindow::on_actionOpen_triggered()
     qDebug() << "File selected: " << sPath;
 
     m_Music = new MusicBuffer(sPath);
-    ui->statusLabel->setText("Loaded");
     ui->playButton->setEnabled(true);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    tinyfd_messageBox(
+        "About", "KVK Audio player by @hackpulsar",
+        "ok", "info", 0
+    );
 }
 
 void MainWindow::PlayingLoop()
@@ -38,17 +55,13 @@ void MainWindow::PlayingLoop()
     while(m_Music->IsPlaying())
     {
         m_Music->UpdateBufferStream();
-        ui->elapsedLabel->setText(QString::number(m_Music->GetElapsedPercent()) + "%");
+
+        auto elapsed = std::chrono::duration<double>(m_Music->GetCurrentElapsedTime());
+        std::string sElapsed = fmt::format("{:02.0f}:{:02.0f}", std::floor(elapsed.count() / 60), std::fmod(elapsed.count(), 60));
+        ui->elapsedLabel->setText(sElapsed.c_str());
+
         ui->progressSlider->setValue(m_Music->GetElapsedPercent());
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-    
-    if (ui->progressSlider->isSliderDown() == false)
-    {
-        qDebug() << "Audio file ended";
-        this->ui->playButton->setEnabled(true);
-        this->ui->elapsedLabel->setText("100%");
-        this->ui->progressSlider->setValue(100);
     }
 }
 
@@ -56,10 +69,19 @@ void MainWindow::on_playButton_clicked()
 {
     if (m_Music != nullptr)
     {
-        m_Music->Play();
+        if (m_Music->IsPlaying())
+        {
+            m_Music->Pause();
+            m_MusicThread->join();
+            this->ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+        }
+        else
+        {
+            m_Music->Play();
 
-        m_MusicThread = new std::thread(&MainWindow::PlayingLoop, this);
-        this->ui->playButton->setEnabled(false);
+            m_MusicThread = new std::thread(&MainWindow::PlayingLoop, this);
+            this->ui->playButton->setIcon(QIcon("../res/pause_icon.png"));
+        }
     }
     else qDebug() << "No music loaded";
 }

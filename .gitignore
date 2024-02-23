@@ -2,3 +2,5 @@ build/
 .cache/
 .git/
 extern/openal-soft/lib/
+
+.DS_Store

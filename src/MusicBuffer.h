@@ -18,6 +18,8 @@ public:
     
     bool IsPlaying() const;
     int GetElapsedPercent() const;
+    double GetDuration() const;
+    double GetCurrentElapsedTime() const;
 
     MusicBuffer(const char* sFilename);
     ~MusicBuffer(); 

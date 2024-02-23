@@ -1,0 +1,5 @@
+/Users/hackpulsar/Documents/Code/C++ Projects/KVK-media-player/lib/CMakeFiles/kvk_media_player.dir
+/Users/hackpulsar/Documents/Code/C++ Projects/KVK-media-player/lib/CMakeFiles/edit_cache.dir
+/Users/hackpulsar/Documents/Code/C++ Projects/KVK-media-player/lib/CMakeFiles/rebuild_cache.dir
+/Users/hackpulsar/Documents/Code/C++ Projects/KVK-media-player/lib/CMakeFiles/kvk_media_player_autogen_timestamp_deps.dir
+/Users/hackpulsar/Documents/Code/C++ Projects/KVK-media-player/lib/CMakeFiles/kvk_media_player_autogen.dir
