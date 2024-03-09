@@ -4,6 +4,8 @@
 #include <AL/alext.h>
 #include <QDebug>
 
+#include <algorithm>
+
 void MusicBuffer::Play()
 {
     ALsizei i;
@@ -116,9 +118,15 @@ void MusicBuffer::UpdateBufferStream()
 bool MusicBuffer::IsPlaying() const
 {
     ALint state;
-
     alGetSourcei(m_Source, AL_SOURCE_STATE, &state);
     return (state == AL_PLAYING);
+}
+
+bool MusicBuffer::HasEnded() const
+{
+    ALint state;
+    alGetSourcei(m_Source, AL_SOURCE_STATE, &state);
+    return (state == AL_STOPPED);
 }
 
 int MusicBuffer::GetElapsedPercent() const { return m_nElapsedPercent; }
@@ -128,6 +136,8 @@ double MusicBuffer::GetCurrentElapsedTime() const
 { 
     return (double)m_nSlens * (double)BUFFER_SAMPLES / (double)m_SFInfo.samplerate;
 }
+
+std::string MusicBuffer::GetTitle() const { return m_sTitle; }
 
 MusicBuffer::MusicBuffer(const char* sFilename)
 {
@@ -168,6 +178,8 @@ MusicBuffer::MusicBuffer(const char* sFilename)
 
     nFrameSize = ((size_t)BUFFER_SAMPLES * (size_t)m_SFInfo.channels) * sizeof(short);
     m_MemBuffer = static_cast<short*>(malloc(nFrameSize));
+
+    m_sTitle = std::string(sFilename).substr(std::string(sFilename).find_last_of('/') + 1);
 
     qDebug() << nFrameSize << " " << m_SFInfo.frames;
 }

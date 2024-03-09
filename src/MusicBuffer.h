@@ -4,6 +4,8 @@
 #include <AL/al.h>
 #include <sndfile.h>
 
+#include <string>
+
 class MusicBuffer
 {
 public:
@@ -17,9 +19,13 @@ public:
     void UpdateBufferStream();
     
     bool IsPlaying() const;
+    bool HasEnded() const;
+
     int GetElapsedPercent() const;
     double GetDuration() const;
     double GetCurrentElapsedTime() const;
+
+    std::string GetTitle() const;
 
     MusicBuffer(const char* sFilename);
     ~MusicBuffer(); 
@@ -37,6 +43,8 @@ private:
 
     int m_nSlens = 0;
     int m_nElapsedPercent = 0;
+
+    std::string m_sTitle;
 
     MusicBuffer() = delete;
 

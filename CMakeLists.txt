@@ -4,9 +4,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (WIN32)
-    project(kvk_media_player LANGUAGES CXX)
+    project(kvk_audio_player LANGUAGES CXX)
 elseif(UNIX)
-    project(kvk_media_player)
+    project(kvk_audio_player)
 endif()
 
 set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo" CACHE STRING "" FORCE)
@@ -62,15 +62,15 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} ${FORMS_DIR})
 
 # Add the executable
 if (WIN32) 
-    add_executable(kvk_media_player WIN32 ${SOURCES})
+    add_executable(kvk_audio_player WIN32 ${SOURCES})
 elseif(UNIX)
-    add_executable(kvk_media_player ${SOURCES})
+    add_executable(kvk_audio_player ${SOURCES})
 endif()
 
 # Add the target includes for MY_PROJECT 
-target_include_directories(kvk_media_player PRIVATE ${FORMS_DIR})
-target_include_directories(kvk_media_player PRIVATE ${SOURCE_DIR})
+target_include_directories(kvk_audio_player PRIVATE ${FORMS_DIR})
+target_include_directories(kvk_audio_player PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
-target_link_directories(kvk_media_player PRIVATE ${EXTERN_LIB_DIRS})
-target_link_libraries(kvk_media_player Qt6::Widgets openal SndFile::sndfile fmt)
+target_link_directories(kvk_audio_player PRIVATE ${EXTERN_LIB_DIRS})
+target_link_libraries(kvk_audio_player Qt6::Widgets openal SndFile::sndfile fmt)

@@ -26,8 +26,13 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_playButton_pressed();
+
+    void on_playButton_released();
+
 private:
     void PlayingLoop();
+    void UpdateTimeLabel();
 
 private:
     Ui::MainWindow *ui;

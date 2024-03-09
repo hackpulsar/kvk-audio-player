@@ -6,6 +6,7 @@
 
 #include <chrono>
 #include <string>
+#include <algorithm>
 
 #include <fmt/format.h>
 
@@ -39,6 +40,8 @@ void MainWindow::on_actionOpen_triggered()
     qDebug() << "File selected: " << sPath;
 
     m_Music = new MusicBuffer(sPath);
+    ui->filenameLabel->setText(m_Music->GetTitle().c_str());
+    ui->progressSlider->setValue(0);
     ui->playButton->setEnabled(true);
 }
 
@@ -56,9 +59,7 @@ void MainWindow::PlayingLoop()
     {
         m_Music->UpdateBufferStream();
 
-        auto elapsed = std::chrono::duration<double>(m_Music->GetCurrentElapsedTime());
-        std::string sElapsed = fmt::format("{:02.0f}:{:02.0f}", std::floor(elapsed.count() / 60), std::fmod(elapsed.count(), 60));
-        ui->elapsedLabel->setText(sElapsed.c_str());
+        this->UpdateTimeLabel();
 
         if (ui->progressSlider->isSliderDown() == false)
             ui->progressSlider->setValue(m_Music->GetElapsedPercent());
@@ -66,6 +67,16 @@ void MainWindow::PlayingLoop()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+
+    if (m_Music->HasEnded())
+        ui->progressSlider->setValue(100);
+}
+
+void MainWindow::UpdateTimeLabel()
+{
+    auto elapsed = std::chrono::duration<double>(m_Music->GetCurrentElapsedTime());
+    std::string sElapsed = fmt::format("{:02.0f}:{:02.0f}", std::floor(elapsed.count() / 60), std::fmod(elapsed.count(), 60));
+    ui->elapsedLabel->setText(sElapsed.c_str());
 }
 
 void MainWindow::on_playButton_clicked()
@@ -80,6 +91,9 @@ void MainWindow::on_playButton_clicked()
         }
         else
         {
+            if (m_Music->HasEnded())
+                m_Music->SetCurrentPlayPosition(0);
+
             m_Music->Play();
 
             m_MusicThread = new std::thread(&MainWindow::PlayingLoop, this);
@@ -102,5 +116,19 @@ void MainWindow::on_progressSlider_sliderReleased()
     if (m_Music != nullptr)
         m_Music->SetCurrentPlayPosition(m_nCurrentPlayPosition);
     else qDebug() << "No music loaded";
+}
+
+
+void MainWindow::on_playButton_pressed()
+{
+    ui->playButton->setFixedSize(95, 95);
+    ui->playButton->setIconSize(QSize(95, 95));
+}
+
+
+void MainWindow::on_playButton_released()
+{
+    ui->playButton->setFixedSize(100, 100);
+    ui->playButton->setIconSize(QSize(100, 100));
 }
 
