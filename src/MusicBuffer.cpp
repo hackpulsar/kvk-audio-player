@@ -4,8 +4,6 @@
 #include <AL/alext.h>
 #include <QDebug>
 
-#include <algorithm>
-
 void MusicBuffer::Play()
 {
     ALsizei i;

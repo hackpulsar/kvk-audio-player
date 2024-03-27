@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,8 +18,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_PREFIX_PATH $ENV{QTDIR})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
-add_compile_options(-Wall -Wextra -Wno-deprecated)
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall -Wextra -Wno-deprecated")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall -Wextra -Wno-deprecated --debug")
 
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)

@@ -3,10 +3,10 @@
 
 #include "SoundDevice.h"
 #include "libtinyfiledialogs/tinyfiledialogs.h"
+#include "MusicDataViewItem.hpp"
 
 #include <chrono>
 #include <string>
-#include <algorithm>
 
 #include <fmt/format.h>
 
@@ -20,9 +20,11 @@ MainWindow::MainWindow(QWidget *parent)
     SoundDevice::init();
 
     ui->playButton->setFixedSize(100, 100);
-    ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+    ui->playButton->setIcon(QIcon("../../res/play_icon.png"));
     ui->playButton->setIconSize(QSize(100, 100));
     ui->playButton->setStyleSheet("border: none;");
+
+    ui->filenameLabel->setWordWrap(true);
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +43,7 @@ void MainWindow::on_actionOpen_triggered()
 
     m_Music = new MusicBuffer(sPath);
     ui->filenameLabel->setText(m_Music->GetTitle().c_str());
+    ui->listWidget->addItem(new MusicDataViewItem(m_Music->GetTitle().c_str(), sPath));
     ui->progressSlider->setValue(0);
     ui->playButton->setEnabled(true);
 }
@@ -66,7 +69,7 @@ void MainWindow::PlayingLoop()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
-    ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+    ui->playButton->setIcon(QIcon("../../res/play_icon.png"));
 
     if (m_Music->HasEnded())
         ui->progressSlider->setValue(100);
@@ -87,7 +90,7 @@ void MainWindow::on_playButton_clicked()
         {
             m_Music->Pause();
             m_MusicThread->join();
-            this->ui->playButton->setIcon(QIcon("../res/play_icon.png"));
+            this->ui->playButton->setIcon(QIcon("../../res/play_icon.png"));
         }
         else
         {
@@ -97,7 +100,7 @@ void MainWindow::on_playButton_clicked()
             m_Music->Play();
 
             m_MusicThread = new std::thread(&MainWindow::PlayingLoop, this);
-            this->ui->playButton->setIcon(QIcon("../res/pause_icon.png"));
+            this->ui->playButton->setIcon(QIcon("../../res/pause_icon.png"));
         }
     }
     else qDebug() << "No music loaded";
@@ -130,5 +133,28 @@ void MainWindow::on_playButton_released()
 {
     ui->playButton->setFixedSize(100, 100);
     ui->playButton->setIconSize(QSize(100, 100));
+}
+
+void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    qDebug() << "Selected item: " << item->text() << ", loading...";
+    if (m_Music != nullptr)
+    {
+        if (m_Music->IsPlaying())
+        {
+            m_Music->Pause();
+            m_MusicThread->join();
+        }
+
+        MusicDataViewItem* musicDataItem = static_cast<MusicDataViewItem*>(item);
+
+        m_Music = new MusicBuffer(musicDataItem->GetPath().toStdString().c_str());
+        ui->filenameLabel->setText(m_Music->GetTitle().c_str());
+        ui->progressSlider->setValue(0);
+        ui->playButton->setEnabled(true);
+        this->UpdateTimeLabel();
+
+        this->on_playButton_clicked();
+    }
 }
 

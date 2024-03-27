@@ -2,8 +2,11 @@
 #define MAINWINDOW_H
 
 #include "MusicBuffer.h"
-#include <QMainWindow>
+
 #include <thread>
+
+#include <QMainWindow>
+#include <QListWidget>
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +32,8 @@ private slots:
     void on_playButton_pressed();
 
     void on_playButton_released();
+
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     void PlayingLoop();

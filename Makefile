@@ -8,4 +8,4 @@ libs:
 	cd extern/fmt && cmake -B./lib && cd lib && make
 
 app:
-	cmake -B./bin && cd bin && make
+	cmake -B./bin -DCMAKE_BUILD_TYPE=Release && cd bin && make
