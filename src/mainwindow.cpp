@@ -39,6 +39,12 @@ void MainWindow::on_actionOpen_triggered()
     const char* sFilterPatterns[2] = { "*.mp3", "*.wav" };
     const char* sPath = tinyfd_openFileDialog("Open File", "", 2, sFilterPatterns, "Music Files", 0);
 
+    if (sPath == NULL)
+    {
+        qDebug() << "No file selected";
+        return;
+    }
+
     qDebug() << "File selected: " << sPath;
 
     m_Music = new MusicBuffer(sPath);
